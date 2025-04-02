@@ -1,0 +1,18 @@
+<div id="nav-border" class="navContainer">
+    <h2 class="nameLinkH2">
+        <a href="/" class="nameLink">Daniel Millward</a>
+    </h2>
+
+    {{/* Need a reference to the page object while looping through the menus */}}
+    {{ $currentPage := . }}
+    <nav id="nav">
+        {{ range .Site.Menus.main.ByWeight }}
+        <a href="{{ .URL }}" class="header-link" {{if eq $currentPage.Path .URL}}style="font-weight: bold"{{end}}>
+            {{ $text := print .Name | safeHTML }}
+            {{ $text }}
+        </a>  
+        {{ end }}
+        <a href="https://github.com/DanielMillward" ><img src="/images/github-mark-white.png" class="githubLink"/></a>
+    </nav>
+    
+</div>

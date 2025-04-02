@@ -1,0 +1,7 @@
+<div class="postTitleBlock">
+    <a class="postTitle" href="{{ .Params.externalLink | default .RelPermalink }}">{{ .Title }}</a>
+    <span class="postDate">
+      {{ .Date.Format (.Site.Params.dateFormat | default "2006-01-02" ) }}
+    </span>
+    
+  </div>

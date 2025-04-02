@@ -1,0 +1,12 @@
+{{ define "main"}}
+<div class="postList">
+{{ range $category, $pages := .Site.Taxonomies.categories }}
+  <div class="categoryBlock">
+    <h2 class="postYear">{{ title $category }}</h2>
+  {{ range $pages.Pages }}
+      {{ partial "postBlock.html" .}}
+    {{ end }}
+  </div>
+{{ end }}
+</div>
+{{end}}

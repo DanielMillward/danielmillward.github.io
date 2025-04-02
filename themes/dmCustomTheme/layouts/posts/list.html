@@ -1,0 +1,13 @@
+{{ define "main" }}
+<div class="postList">
+  {{ .Content}} 
+  {{ range (where .Site.RegularPages "Type" "in" (slice "posts")).GroupByDate "2006" }}
+  <div class="categoryBlock">
+    <h2 class="postYear">{{ .Key }}</h2>
+  {{ range .Pages }}
+    {{ partial "postBlock.html" .}}
+    {{- end -}}
+  {{ end }}
+  </div>
+</div>
+{{ end }}
