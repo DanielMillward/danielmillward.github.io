@@ -162,6 +162,6 @@ img {
   padding: 0 16px;
 }
 
-code {
-  width: 100%;
+pre {
+  overflow-x: auto;
 }
