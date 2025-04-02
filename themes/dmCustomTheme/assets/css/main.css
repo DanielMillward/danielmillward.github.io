@@ -140,3 +140,28 @@ img {
   margin-bottom: -5px;
   margin-left: 25px;
 }
+
+.mainContainer {
+  display: flex;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.heropicContainer {
+  flex: 4; /* 1 part out of total 3 */
+}
+
+.heropicContainer img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.mainText {
+  flex: 5; /* 2 parts out of total 3 */
+  padding: 0 16px;
+}
+
+code {
+  width: 100%;
+}
