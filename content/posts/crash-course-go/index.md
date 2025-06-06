@@ -2,7 +2,7 @@
 date = '2025-05-05T09:07:33-06:00'
 draft = false
 title = 'Go Crash Course'
-categories = ["Go Crash Course"]
+categories = ["Golang"]
 +++
 
 Want to write [Go](https://go.dev/) quickly and already have some experience in other languages? This post is for you!
