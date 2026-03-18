@@ -16,3 +16,6 @@ Run local server:
 hugo server
 ```
 
+Modify the home page at `themes/layouts/_default/index.html`
+
+Add site-wide images inside `static/images`
