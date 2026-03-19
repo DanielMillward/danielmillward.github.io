@@ -28,14 +28,14 @@ $$
 Norms are a way to determine how “long” a vector is. Traditionally, this is done by using the distance equation. But since the start is always the origin, we simplify it to  
 
 $$
-x \left \| \vec{\beta} \right \|_2=\sqrt{bet_{0}^{2}+\beta_{1}^{2}}
+x \left \| \vec{\beta} \right \|_2=\sqrt{\beta\_{0}^{2}+\beta\_{1}^{2}}
 $$
 
 Where $\beta_{0}$ and $\beta_{1}$ are the coordinates of the vector.
 That’s called the L2-Norm. Another way of finding length is just by adding those vector values together -
 
 $$
-\left \| \vec{\beta} \right \|_2=|\beta_{0}|+|\beta_{1}|
+\left \| \vec{\beta} \right \|_2=|\beta\_{0}|+|\beta\_{1}|
 $$
 
 That’s the L-1 Norm. We can generalize this for all L-whatever norms:
@@ -49,7 +49,7 @@ The Max-Norm, or L-inf, is just the biggest value in the vector.
 To get the “size” of a whole matrix, use the Frobenius norm:
 
 $$
-||\boldsymbol{A}||_{p}=\sqrt{\sum_{i,j} \boldsymbol{A}_{i,j}^{2}}
+||\boldsymbol{A}||\_{p}=\sqrt{\sum\_{i,j} \boldsymbol{A}\_{i,j}^{2}}
 $$
  
 ## Some facts about diagonal matrices –

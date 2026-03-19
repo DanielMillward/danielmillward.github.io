@@ -13,17 +13,12 @@
 <link rel="manifest" href="/favicons/site.webmanifest" />
 
 <!-- MATHJAX -->
-<!-- For inlining help: https://tex.stackexchange.com/questions/27633/mathjax-inline-mode-not-rendering -->
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {
-        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-        processEscapes: true
-      }
-    });
-  </script>
-      
-  <script type="text/javascript"
-          src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-  </script>
-  
+<!-- For inlining help: https://docs.mathjax.org/en/stable/web/start.html#configuring-mathjax -->
+<script>
+MathJax = {
+  tex: {
+    inlineMath: {'[+]': [['$', '$']]}
+  }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
