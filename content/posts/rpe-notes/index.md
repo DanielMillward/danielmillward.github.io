@@ -33,7 +33,7 @@ Figures 1-3 and 1-4 (pages 6-7) show a high level diagram of a propulsion system
 
 Figure 1-4 (page 7) has a great diagram of a turbopump-driven propulsion system. I didn't like the image version I had, so I remade it as an svg here:
 
-![A hand-made recreation of figure 1-4. A simplified schematic of a turbopump feed system.](./RPE-Figure-1-4.svg)
+![A hand-made recreation of figure 1-4. A simplified schematic of a turbopump feed system.](./Turbopump-engine-diagram.svg)
 
 Selecting a propulsion type (among the many described) comes down to system performance, reliability, cost, propulsion system size, and compatibility (p. 14).
 
@@ -59,3 +59,77 @@ Table 1-3 (p. 18) Has some specifications for the Delta IV heavy and Atlas V roc
 Thrust levels under 100 kg is called *Micropropulsion*.
 
 # Chapter 2: Definitions and Fundamentals
+
+**Mass flow rate ($F/\dot m$, kg/s)**: How much propellant is expelled per second
+
+- At sea level, it's also the rate of weight change / $g_0$
+- For multiple thrusters: the total mass flow rate is just the sum of the individual mass flow rates of each engine. For turbopump engines, include the mass through the turbine exhaust too!
+
+**Thrust ($F$, N)**: The force the propulsion system exerts on the rocket. Measured in Newtons.
+
+- Can be found via: F = $\dot m v_2$, where $v_2$ is the relative exhaust velocity at the nozzle. Assumes exit pressure == ambient pressure and constant exit velocity.
+- More accurate version: $F = \dot m v_2$ + (exit pressure - ambient pressure) x nozzle exit area
+- Based on the above equation, we see that the thrust is maximized when ambient pressure is 0 - aka, a vacuum! Thrust generally improves 10-30% over sea level. 
+- **Pressure thrust** is the second part of the accurate equation. Negative pressure thrust is bad, so design your exit pressure to be higher than ambient pressure. **Momentum thrust** is the term for the first part ($\dot m v_2$)
+- For multiple thrusters: the total force is just the sum of the individual forces produced by each engine
+
+**Total Impulse ($I_t$, Ns)**: Area under the force/time graph. Also equivalent to change in momentum. Measured in Newton-seconds.
+
+- How it's measured: Measure the thrust/force via a load cell in a static fire, then find the area under that graph.
+
+**Specific Impulse ($I_s$, s):** Total impulse / (expelled mass x 9.806m/s^2)
+
+- Measure of a rocket's efficiency, a la miles per gallon
+- How it's measured: For an overall specific impulse just measure the rocket before and after to get the overall propellant mass used. For instantaneous specific impulse, measure the instantaneous mass flow rate (easiest for liquid rocket engines).
+- The $g$ constant (9.806 m/s^2) is mostly just there to make the units seconds for use across measurement systems.
+- For multiple engines: Overall force / (Overall mass flow rate x $g_0$)
+
+
+**Average Exit Velocity ($c$, m/s)**: $I_s g_0$
+
+- The actual exhaust velocity is hard to measure, and can vary over the nozzle exit area, so we assume it's uniform and calculate it via equations.
+- Also calculated via: $F/\dot m$ assuming constant thrust
+- Since it only differs from $I_s$ by a constant, it can also be used to measure efficiency
+- The **effective exhaust velocity** is a more accurate version: $c = v_2 + (p_2 - p_3)A_2 / \dot m = I_s g_0$, where $v_2$ is the relative exit velocity at the nozzle. The second part is usually small though, so it's pretty similar to the actual exhaust velocity.
+
+**Characteristic Velocity ($c^*$):** (chamber pressure x throat area) / mass flow rate
+
+- Used for comparison different propulsion systems & propellant choice, since it's not dependent on the nozzle geometry.
+
+**Mass Ratio ($MR$)**: final mass ($m_f$) / loaded-on-pad mass ($m_0$)
+
+**Propellant Mass Fraction** ($\zeta$): useable propellant mass ($m_p$) / pre-launch propulsion system mass ($m_0$)
+
+- Values closer to 1 are better (means more of the rocket's mass is propellant)
+- $m_0$ doesn't include non-propulsion mass, e.g. payload or guidance.
+
+**Impulse to weight ratio**: Total Impulse / loaded-on-pad *weight*
+
+- Higher value == more efficient design
+
+**Thrust to weight ratio (TWR)**: Thrust force / *weight*
+
+- Used for seeing how fast the rocket gets off the pad (or if it does at all, must be > 1)
+- We use weight since the context is planet-dependent
+- Maximum TWR occurs right before burnout, i.e. running out of fuel
+
+**Optimum Expansion Ratio**: When the exit pressure is equal to ambient pressure. The nozzle / throat area ratio is usually designed so that the optimum expansion happens at or above sea level.
+
+**Power transmitted to the vehicle**: $F$ x Vehicle velocity
+
+**Internal Efficiency ($\eta_{int}$)**: = jet kinetic energy / avaliable chemical power
+
+$$
+\frac{\frac{1}{2}\dot m v^2}{\eta_{comb}P_{chem}}
+$$
+
+- The fraction of available chemical power turned into kinetic energy in the exhaust
+
+**Propulsive efficiency**: (Power transmissted to vehicle) / (Power transmitted to vehicle + residual kinetic jet power)
+
+- Maximized when the vehicle velocity equals the exhaust velocity, making the exhaust "stand still" in space - think of the Mythbusters backwards soccer cannon on a truck. 
+- Specific Impulse covers this kind of efficiency already?
+
+Typical vehicle TWRs to effective exhaust velocities (Figure 2-4, p. 39):
+
+![Figure 2-4: Typical TWR to effective exhaust velocity graph](./TWR-to-exhaust-velocity.png)
