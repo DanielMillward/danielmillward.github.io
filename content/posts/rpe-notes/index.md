@@ -133,3 +133,5 @@ $$
 Typical vehicle TWRs to effective exhaust velocities (Figure 2-4, p. 39):
 
 ![Figure 2-4: Typical TWR to effective exhaust velocity graph](./TWR-to-exhaust-velocity.png)
+
+Engines are generally throttled down to avoid excessive aerodynamic pressure on the vehicle on ascent (usually around Max-Q, the point of max aerodynamic pressure). They're also throttled down for landing.
