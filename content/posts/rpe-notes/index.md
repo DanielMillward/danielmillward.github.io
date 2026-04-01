@@ -5,11 +5,11 @@ title = 'Rocket Propulsion Elements Book Notes'
 categories = ["Rocketry"]
 +++
 
-This post is a compilation of the notes I've taken when reading the book [Rocket Propulsion Elements](https://www.amazon.com/Rocket-Propulsion-Elements-George-Sutton/dp/1118753658) by George Sutton. Please note that this won't cover everything the book writes about: I'm most interested in the design of pressure fed and pump-driven bipropellant liquid chemical rocket engines, so things like chapter 17 which covers electric propulsion will largely be ignored.
+This post is a compilation of the notes I've taken when reading the book [Rocket Propulsion Elements](https://www.amazon.com/Rocket-Propulsion-Elements-George-Sutton/dp/1118753658) by George Sutton. *Please note* that this won't cover everything the book writes about: I'm most interested in the design of pressure fed/pump-driven bipropellant liquid chemical rocket engines for suborbital flight, so things like chapter 17 which covers electric propulsion will largely be ignored.
 
 For equations, I'm planning on writing them in code since that makes it a little clearer to me.
 
-All the units will be in the SI system of units.
+I will, of course, try to only use SI units.
 
 # Chapter 1: Classification
 
@@ -115,6 +115,8 @@ Thrust levels under 100 kg is called *Micropropulsion*.
 
 **Optimum Expansion Ratio**: When the exit pressure is equal to ambient pressure. The nozzle / throat area ratio is usually designed so that the optimum expansion happens at or above sea level.
 
+**Specific Volume**: The volume divided by the mass inside. Usually a graph across the nozzle pressure.
+
 **Power transmitted to the vehicle**: $F$ x Vehicle velocity
 
 **Internal Efficiency ($\eta_{int}$)**: = jet kinetic energy / avaliable chemical power
@@ -135,3 +137,141 @@ Typical vehicle TWRs to effective exhaust velocities (Figure 2-4, p. 39):
 ![Figure 2-4: Typical TWR to effective exhaust velocity graph](./TWR-to-exhaust-velocity.png)
 
 Engines are generally throttled down to avoid excessive aerodynamic pressure on the vehicle on ascent (usually around Max-Q, the point of max aerodynamic pressure). They're also throttled down for landing.
+
+
+
+# Chapter 3: Nozzle Theory and Thermodynamic Relations
+
+For the equations in this section, the following assumptions are made: corrective factors are described later in the book and a summary of the non-ideal behaviors is in 3.5:
+
+- The working fluid is homogenous, gaseous, and obeys the [perfect gas law](https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Supplemental_Modules_(Physical_and_Theoretical_Chemistry)/Physical_Properties_of_Matter/States_of_Matter/Properties_of_Gases/Gas_Laws/The_Ideal_Gas_Law). Rocket injectors are pretty good at mixing, so a good assumption. Also, temperatures are high enough that gases generally behave ideally.
+- No heat transfer/fraction with the walls, meaning the flow is [adiabatic](https://energyeducation.ca/encyclopedia/Adiabatic). Aside for small chambers, heat losses are less than 1-2%.
+- No disturbances in the flow rate, including no shock waves/discontinuities. 
+- Start up/shutdown times are negligable.
+- The exhaust gases are parallel to the nozzle axis, and the velocity/pressure/temperature/density are uniform normal/perpendicular to the nozzle axis. You can use a conical exit with a 15 degree half angle to account for non-parallel exhaust gas.
+- Propellants are at ambient temperature, except for cryogenic propellants stored at boiling point.
+
+The goal of rocket nozzle design is to convert as much of the energy in the combustion gas into directed kinetic energy. The available energy a unit mass of gas has, aka its total/stagnation enthalpy per unit mass, is its [enthalpy](https://physics.stackexchange.com/questions/356412/what-does-enthalpy-mean/356432#356432) `h` plus its kinetic energy:
+
+$$
+h\_0 = h + \frac{v^2}{2} = u + \frac{p}{\rho}+\frac{v^2}{2}
+$$
+
+Where $u$ is the internal energy, $p/\rho$ is the work energy per unit mass, and $v$ is velocity.
+
+The ratio between the pressure and volume for a specific mass of combustion gas ($c\_p / c\_v$) is called the specific heat ratio $k$. It's constant for a wide range of temperatures.
+
+
+### Example 3-1.
+
+Say we have propellants whose combustion gas has a specific heat ratio of 1.3, and a known exit Mach number of 2.52. For optimum expansion, i.e. where the exit pressure matches atmospheric (0.1013 MPa), then the ideal chamber pressure is the total stagnation pressure (eq. 3-13, p 73):
+
+```python
+def chamber_pressure(p_exit: pressure, M_exit: mach, k: spec_heat_ratio):
+    return p_exit * (1 + 0.5 * (k-1) * M_exit ** 2) ** (k / (k-1))
+```
+
+So we get 1.84 MPa. We can also get the ideal nozzle area ratio (nozzle exit area / nozzle throat area) via eq. 3-14 on page 74:
+
+```python
+def y_to_x_nozzle_area_ratio(m_x: mach, m_y: mach, k: spec_heat_ratio):
+    part_1 = m_x / m_y
+    part_2 = ((1+((k-1)/2) * m_y**2) / (1+((k-1)/2) * m_x**2)) ** ((k+1) / (k-1))
+    return part_1 * sqrt(part_2)
+```
+
+Assuming a large chamber cross section to throat ratio and a chamber temperature close to stagnation temperature, we get a simplified but widely used equation for the exit velocity (eq 3-16, p 76):
+
+```python
+def exit_velocity(k: spec_heat_ratio, R: gas_constant, T_chamber: temperature, p_exit: pressure, p_chamber: pressure):
+    part_1 = 2*k / (k-1)
+    part_2 = (R * T_chamber)
+    part_3 = 1 - (p_exit / p_chamber) ** ((k-1) / k)
+    return sqrt(part_1 * part_2 * part_3)
+
+# Alternatively:
+
+def exit_velocity(k: spec_heat_ratio, R_prime: universal_gas_constant, T_combustion: temperature, M_molecular: mass, p_exit: pressure, p_chamber: pressure):
+    part_1 = 2*k / (k-1)
+    part_2 = (R_prime * T_combustion) / M_molecular
+    part_3 = 1 - (p_exit / p_chamber) ** ((k-1) / k)
+    return sqrt(part_1 * part_2 * part_3)
+
+```
+
+Using the equations for specific impulse, we can see that any increase in combustion temperature or decrease in molecular mass improves `part_2`, meaning exhaust velocity increases, meaning specific impulse increases. Improving chamber pressure or reducing exit pressure also improves specific impulse.
+
+Comparing specific impulse between different designs requires standardizing chamber and exit pressure: 1000 psia chamber and 1atm exit pressures are usually used.
+
+The ideal exhaust velocity only matches $c\_{opt}$ when the exit pressure matches ambient pressure.
+
+The maximum theoretical exit velocity, assuming an infinite nozzle expansion into a vacuum, is (eq 3-18, p. 78):
+
+```python
+def max_exit_velocity(k: spec_heat_ratio, R_gas: gas_constant, T_combustion: temperature):
+    return sqrt((2 * k * R_gas * T_combustion) / (k - 1))
+```
+
+Besides the ambient pressure/infinite nozzle assumptions, this is theoretical since at some point the gas will liquify and stop expanding.
+
+### Example 3-2 (p. 78)
+
+See FIgure 3-3 on page 80 for sample results of the function.
+```python
+def pressure_temp_input_to_engine_properties(p_chamber: pressure, t_chamber: temperature, prop_consum_rate: kg_per_sec, k: spec_heat_ratio, R_gas: gas_constant, p_ambient_design: pressure, pressure_step: pressure):
+    effective_exit_v = exit_velocity(k, R, t_chamber, p_ambient_design, p_chamber)
+    ideal_specific_impulse = effective_exit_v / G_0
+    ideal_thrust = prop_consum_rate * effective_exit_v
+
+    start_specific_volume = (R * t_chamber) / p_chamber # From ideal gas law
+
+    # Graphs are vs the pressure over the nozzle from combustion to 
+    volume_graph = []
+    temperature_graph = []
+    velocity_graph = []
+    area_graph = []
+    mach_graph = []
+
+    for pressure in range(p_chamber, p_ambient_design, pressure_step):
+        volume = start_specific_volume * (p_chamber / pressure) ** (1/k)
+        velocity = exit_velocity(k, R, t_chamber, pressure, p_chamber)
+        temperature = t_chamber * (pressure / p_chamber) ** ((k-1/k))
+        volume_graph.push(pressure, volume)
+        temperature_graph.push(pressure, )
+        velocity_graph.push(pressure, velocity)
+        area_graph.push(pressure, (prop_consum_rate * (volume)) / velocity)
+        mach_graph.push(pressure, velocity / sqrt(k * R * temperature))
+
+
+    return ideal_specific_impulse, ideal_thrust, area_graph, velocity_graph, volume_graph, temperature_graph, mach_graph
+```
+
+The **nozzle expansion area ratio** $\epsilon$ is the nozzle exit area / throat area.
+
+The **critical pressure** is the throat pressure where the flow rate attains its maximum. It's given as throat pressure / combustion chamber pressure. It's usually around 0.53 to 0.57. If the real pressure ratio exceeds the critical pressure, the flow rate is less than its maximum.
+
+```python
+def critical_pressure(k: spec_heat_ratio):
+    return (2/(k+1)) ** (k/(k-1))
+```
+
+Given the throat is at critical pressure, we can find the theoretical specific volume and temperature:
+
+```python
+def crit_pressure_throat_volume(V_combustion: volume, k: spec_heat_ratio):
+    return V_combustion * ((k+1) / 2) ** (1/(k-1))
+
+def crit_pressure_throat_temp(T_combustion: temperature, k: spec_heat_ratio):
+    return (2 * T_combustion) / (k + 1)
+
+def crit_pressure_throat_velocity(k: spec_heat_ratio, R: gas_constant, T_throat: temperature):
+    return sqrt(k * R * T_throat) # equal to the speed of sound!
+```
+
+Nozzles must be designed such that the ratio between the inlet and exit pressures of the nozzle is high enough to make the divergent section supersonic. Meaning, the chamber pressure must be above roughly 1.78 times that of the exit!
+
+Since mass flow in must equal mass flow out, the mass flow rate at any cross section (including a choked throat) is just `(Area * velocity) / specific volume` (eq. 3-24, p 83).
+
+## 3.5: Real Nozzles
+Actual nozzle performance is usually 1-6% less than ideal. General practice is to start with the mathematically ideal nozzle shape and use experimental data to correct it later. You could also use more advanced Algorithms (TM) that take into account:
+- (TODO: List here)
